@@ -1,0 +1,187 @@
+{
+  "sourceSha256": "c59d9d7acf5bbb3099a31742dcb13e8acd4e9d06d39e776a596e50d16f1ea700",
+  "canvas": [
+    512,
+    384
+  ],
+  "poses": {
+    "anya-wave": [
+      12,
+      25,
+      218,
+      332
+    ],
+    "snowy-idle": [
+      20,
+      350,
+      203,
+      564
+    ],
+    "anya-correct": [
+      425,
+      47,
+      564,
+      327
+    ],
+    "snowy-paw": [
+      387,
+      372,
+      550,
+      567
+    ],
+    "anya-thinking": [
+      722,
+      34,
+      902,
+      330
+    ],
+    "snowy-thinking": [
+      749,
+      346,
+      891,
+      568
+    ],
+    "snowy-rest": [
+      374,
+      858,
+      551,
+      998
+    ],
+    "anya-hint": [
+      910,
+      11,
+      1120,
+      330
+    ],
+    "snowy-book": [
+      917,
+      364,
+      1116,
+      568
+    ],
+    "anya-celebrate": [
+      1305,
+      15,
+      1532,
+      332
+    ],
+    "snowy-celebrate": [
+      1327,
+      343,
+      1529,
+      568
+    ],
+    "anya-books": [
+      220,
+      35,
+      403,
+      332
+    ],
+    "snowy-sleep": [
+      557,
+      826,
+      747,
+      998
+    ]
+  },
+  "states": {
+    "idle": {
+      "file": "idle.png",
+      "poses": [
+        "anya-wave",
+        "snowy-idle"
+      ],
+      "bounds": [
+        73,
+        70,
+        438,
+        358
+      ],
+      "sha256": "870eeed05ddef4329f5f169b0dcc9954b869f9ff26368fa071fa08f6f2c112dd"
+    },
+    "thinking": {
+      "file": "thinking.png",
+      "poses": [
+        "anya-thinking",
+        "snowy-thinking"
+      ],
+      "bounds": [
+        103,
+        83,
+        409,
+        358
+      ],
+      "sha256": "d92c4dd6b2c3ed3edf81d2563fda8a9c4768fe30a64fecef773c9dc47461b893"
+    },
+    "correct": {
+      "file": "correct.png",
+      "poses": [
+        "anya-correct",
+        "snowy-paw"
+      ],
+      "bounds": [
+        112,
+        92,
+        400,
+        358
+      ],
+      "sha256": "846a4c1a7e6835f9ab65205f96939b565179ed13637572f085491bd03a9f7089"
+    },
+    "almost": {
+      "file": "almost.png",
+      "poses": [
+        "anya-thinking",
+        "snowy-rest"
+      ],
+      "bounds": [
+        89,
+        83,
+        423,
+        358
+      ],
+      "sha256": "5e1f4009b514e73dc4d3c992a4ac1aef64d215943432814ebee62a44c437f2c1"
+    },
+    "hint": {
+      "file": "hint.png",
+      "poses": [
+        "anya-hint",
+        "snowy-book"
+      ],
+      "bounds": [
+        67,
+        59,
+        445,
+        358
+      ],
+      "sha256": "6d021efd7c527373a192c50ba59016eb02258095bf6d056107e3f3a19b028a73"
+    },
+    "levelComplete": {
+      "file": "levelComplete.png",
+      "poses": [
+        "anya-celebrate",
+        "snowy-celebrate"
+      ],
+      "bounds": [
+        62,
+        66,
+        449,
+        358
+      ],
+      "sha256": "ed106ff6519608795a68f57c17f924c807e4c243b5247b84741c5c3e80e1cee7"
+    },
+    "noLives": {
+      "file": "noLives.png",
+      "poses": [
+        "anya-books",
+        "snowy-sleep"
+      ],
+      "bounds": [
+        80,
+        79,
+        431,
+        358
+      ],
+      "sha256": "cd643b4838119dab9877934d91b39870ca834ebcbcdbccd641ce5ca9f7812c24"
+    }
+  }
+}

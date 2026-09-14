@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fcf9ff">
+  <meta name="description" content="Аня и Снежки собирают математическое созвездие: 36 этапов, умножение, деление, скобки, остаток и новые задачи в каждой попытке.">
+  <title>Аня и Снежки · Математическое созвездие</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%23f0dcef'/%3E%3Cpath d='M32 8l7 16 17 8-17 7-7 17-7-17-17-7 17-8z' fill='%238057ac'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="preload" as="image" href="./assets/mascots/idle.png">
+  <link rel="preload" as="image" href="./assets/mascots/thinking.png">
+  <link rel="preload" as="image" href="./assets/mascots/correct.png">
+  <link rel="preload" as="image" href="./assets/mascots/almost.png">
+  <link rel="preload" as="image" href="./assets/mascots/hint.png">
+  <link rel="preload" as="image" href="./assets/mascots/levelComplete.png">
+  <link rel="preload" as="image" href="./assets/mascots/noLives.png">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">К игре</a>
+  <header class="site-header">
+    <a class="brand" href="#map" aria-label="Аня и Снежки — карта созвездий"><span class="brand-mark" aria-hidden="true">✦</span><span>Аня <span class="brand-and">и</span> Снежки<small>МАТЕМАТИЧЕСКОЕ СОЗВЕЗДИЕ</small></span></a>
+    <nav class="header-actions" aria-label="Основное меню">
+      <button id="map-button" class="nav-button" type="button"><span data-icon="star"></span><span>Карта</span></button>
+      <button id="table-button" class="nav-button" type="button"><span data-icon="book"></span><span>Таблица</span></button>
+      <div id="wallet" class="wallet" aria-label="Собрано 0 звёзд из 108"><span aria-hidden="true">★</span><b id="star-total">0</b><span class="wallet-max">/ 108</span></div>
+      <button id="settings-button" class="icon-button" type="button" aria-label="Настройки"><span data-icon="settings"></span></button>
+    </nav>
+  </header>
+  <main id="main-content">
+    <section id="screen-home" class="screen home-screen" aria-labelledby="home-title">
+      <div class="intro-row"><div><p class="eyebrow">ТВОЯ МАЛЕНЬКАЯ ВСЕЛЕННАЯ</p><h1 id="home-title">Привет, Аня <span aria-hidden="true">✧</span></h1></div><span class="grade-tag">3 класс <span>и немного волшебства</span></span></div>
+      <article class="launch-card">
+        <div class="launch-copy">
+          <p id="mission-label" class="mission-label"></p><h2 id="launch-title"></h2><p id="launch-description"></p>
+          <button id="continue-game" class="primary-button" type="button">Начать путешествие <span data-icon="arrow"></span></button>
+          <p id="mission-meta" class="mission-meta"></p>
+        </div>
+        <div class="launch-art">
+          <span class="orbit orbit-one" aria-hidden="true"></span><span class="orbit orbit-two" aria-hidden="true"></span>
+          <span class="space-spark spark-one" aria-hidden="true">✦</span><span class="space-spark spark-two" aria-hidden="true">✧</span>
+          <div class="mascot mascot-home" data-reaction="idle" role="img" aria-label="Аня машет рукой, кошечка Снежки рядом"><img src="./assets/mascots/idle.png" width="512" height="384" alt="" decoding="async" draggable="false"></div>
+          <span class="snowy-note">У нас всё получится!</span>
+        </div>
+      </article>
+      <div id="map" class="map-heading"><div><p class="eyebrow">ОДНА ЗВЕЗДА ЗА ДРУГОЙ</p><h2>Карта созвездий</h2></div><span id="map-progress"></span></div>
+      <div id="world-map" class="world-grid" aria-label="12 созвездий и 36 игровых этапов"></div>
+      <p class="map-note"><span data-icon="heart"></span>Три жизни в каждом этапе. Никакой спешки: подсказки и новые попытки всегда рядом.</p>
+      <p class="advanced-note">«Сириус+» — наше дополнительное игровое испытание, не официальная программа образовательного центра.</p>
+    </section>
+    <section id="screen-game" class="screen game-screen" aria-labelledby="game-title" hidden>
+      <div class="game-heading">
+        <button id="game-back" class="text-button" type="button"><span data-icon="back"></span>К карте</button>
+        <div class="game-world"><p id="game-eyebrow" class="eyebrow"></p><h1 id="game-title"></h1></div>
+        <div id="hearts" class="hearts" role="status" aria-live="polite"></div>
+      </div>
+      <div class="progress-line"><span id="task-counter" role="status" aria-live="polite"></span><progress id="task-progress" max="8" value="0" aria-label="Решено задач в этапе"></progress><span id="game-badge" class="tiny-tag"></span><span id="practice-timer" class="practice-timer" aria-live="off" hidden></span></div>
+      <article class="task-card">
+        <div class="task-content">
+          <div class="task-topline"><p id="task-kind" class="eyebrow"></p><span id="task-number" class="task-number"></span></div>
+          <div id="expression" class="expression" role="math"></div>
+          <form id="answer-form" novalidate>
+            <div id="number-fields" class="number-fields">
+              <div class="field-wrap"><label id="answer-label" for="answer-input">Твой ответ</label><input id="answer-input" type="text" inputmode="numeric" enterkeyhint="done" pattern="[0-9]*" maxlength="64" autocomplete="off" spellcheck="false" autocapitalize="off" dir="ltr" aria-describedby="input-help feedback"></div>
+              <div id="remainder-wrap" class="field-wrap" hidden><label for="remainder-input">Остаток</label><input id="remainder-input" type="text" inputmode="numeric" enterkeyhint="done" pattern="[0-9]*" maxlength="64" autocomplete="off" spellcheck="false" dir="ltr" aria-describedby="input-help feedback"></div>
+            </div>
+            <div id="choice-fields" class="choice-fields" role="group" aria-label="Варианты ответа" hidden></div>
+            <p id="input-help" class="input-help"></p>
+            <button id="submit-answer" class="primary-button check-button" type="submit">Проверить <span data-icon="check"></span></button>
+          </form>
+          <p id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+          <button id="retry-answer" class="secondary-button" type="button" hidden>Попробовать ещё раз</button>
+        </div>
+        <aside class="keypad-side" aria-label="Экранная клавиатура"><p class="keypad-label">МОЖНО ВВЕСТИ ЗДЕСЬ</p><div id="keypad" class="keypad"></div><p class="keyboard-tip"><span data-icon="keyboard"></span>Или на своей клавиатуре</p></aside>
+      </article>
+      <div class="companion-row">
+        <div class="mascot mascot-game" data-reaction="thinking" role="img" aria-label="Аня и Снежки думают над примером"><img src="./assets/mascots/thinking.png" width="512" height="384" alt="" decoding="async" draggable="false"></div>
+        <div class="companion-copy"><p id="companion-title" class="companion-title"></p><p id="companion-message"></p>
+          <button id="hint-button" class="hint-button" type="button" aria-expanded="false" aria-controls="hint-panel"><span data-icon="bulb"></span>Подсказка Снежки</button>
+          <section id="hint-panel" class="hint-panel" aria-labelledby="hint-heading" hidden><div class="hint-top"><h2 id="hint-heading"></h2><button id="hint-close" type="button" class="icon-button" aria-label="Закрыть подсказку"><span data-icon="close"></span></button></div><p id="hint-text" class="hint-text" role="status" aria-live="polite"></p><button id="hint-next" class="text-button" type="button">Следующий шаг <span data-icon="arrow"></span></button></section>
+        </div>
+      </div>
+      <button id="restart-run" class="text-button restart-button" type="button"><span data-icon="restart"></span>Начать этап заново</button>
+    </section>
+    <section id="screen-table" class="screen table-screen" aria-labelledby="table-title" hidden>
+      <button id="table-back" class="text-button" type="button"><span data-icon="back"></span><span id="table-back-label">К созвездиям</span></button>
+      <div class="intro-row"><div><p class="eyebrow">МАЛЕНЬКИЕ СЕКРЕТЫ БОЛЬШИХ ПРИМЕРОВ</p><h1 id="table-title">Умная таблица</h1><p class="muted">Умножение и деление дружат. Посмотри как!</p></div><span class="calm-tag"><span data-icon="heart"></span>Без потери жизней</span></div>
+      <div class="table-layout">
+        <article class="reference-card"><div class="segmented" role="group" aria-label="Вид таблицы"><button type="button" data-mode="multiply" aria-pressed="true">Умножение</button><button type="button" data-mode="divide" aria-pressed="false">Деление</button></div>
+          <div class="table-scroll"><table id="times-grid" class="times-grid"></table></div>
+          <div id="fact-family" class="fact-family" role="status" aria-live="polite"></div>
+        </article>
+        <article class="practice-card"><p class="eyebrow">ПРИМЕРЫ СТАНОВЯТСЯ ЗНАКОМЫМИ</p><h2 id="practice-title">Выбери числа</h2><p class="muted">Можно отметить несколько чисел.</p>
+          <div id="factor-buttons" class="factor-buttons" role="group" aria-label="Числа для тренировки"></div>
+          <label class="check-option"><input id="practice-mixed" type="checkbox">Умножение и деление вперемешку</label>
+          <div id="fact-list" class="fact-list"></div>
+          <button id="start-practice" class="primary-button" type="button">Потренироваться <span data-icon="arrow"></span></button>
+          <div class="speed-options"><label for="speed-duration">На скорость</label><select id="speed-duration"><option value="30">30 секунд</option><option value="60" selected>60 секунд</option><option value="90">90 секунд</option></select><button id="start-speed" class="secondary-button" type="button"><span data-icon="clock"></span>Попробовать на скорость</button></div>
+          <p class="practice-note">Обычная тренировка — без таймера. Ни один из режимов не меняет звёзды и открытые этапы.</p>
+        </article>
+      </div>
+    </section>
+    <section id="screen-results" class="screen results-screen" aria-labelledby="results-title" hidden>
+      <article class="result-card"><p id="result-eyebrow" class="eyebrow"></p>
+        <div class="mascot mascot-result" data-reaction="levelComplete" role="img" aria-label="Аня и Снежки радуются завершённому этапу"><img src="./assets/mascots/levelComplete.png" width="512" height="384" alt="" decoding="async" draggable="false"></div>
+        <div id="result-stars" class="result-stars"></div><h1 id="results-title"></h1><p id="result-description"></p><p id="best-result" class="best-result"></p><div id="result-stats" class="result-stats"></div>
+        <div id="recovery-problem" class="recovery-problem" hidden></div><div id="review-problems" class="review-problems" hidden></div>
+        <div class="result-actions"><button id="next-level" class="primary-button" type="button">Следующий этап <span data-icon="arrow"></span></button><button id="replay-level" class="secondary-button" type="button">Ещё раз — новые примеры</button><button id="results-map" class="text-button" type="button">К карте созвездий</button></div>
+      </article>
+    </section>
+  </main>
+  <footer class="author-mark">Придумано 🧠 · собрано с 🤖 · <a href="https://t.me/ZGennadiy" target="_blank" rel="noopener noreferrer">@ZGennadiy</a></footer>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><div class="dialog-top"><h2 id="settings-title">Настройки созвездия</h2><button type="button" class="icon-button" data-close="settings-dialog" aria-label="Закрыть настройки"><span data-icon="close"></span></button></div>
+    <label class="setting-row"><span><b>Звук</b><small>Тихие звуки успеха и подсказок</small></span><input id="setting-sound" type="checkbox" role="switch"></label>
+    <label class="setting-row"><span><b>Уменьшить движение</b><small>Без прыжков и декоративных анимаций</small></span><input id="setting-motion" type="checkbox" role="switch"></label>
+    <p class="settings-note">Прогресс хранится только в этом браузере. Регистрации, рекламы и сбора личных данных нет.</p><button id="reset-game" class="danger-button" type="button">Сбросить весь прогресс</button>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">Сбросить весь прогресс?</h2><p>Аня и Снежки начнут путешествие сначала. Все открытые этапы и звёзды будут удалены.</p><p class="muted">Настройки звука и движения сохранятся.</p><div class="dialog-actions"><button class="secondary-button" type="button" data-close="reset-dialog" autofocus>Отмена</button><button id="confirm-reset" class="danger-button" type="button">Да, сбросить</button></div></dialog>
+  <dialog id="restart-dialog" aria-labelledby="restart-title"><h2 id="restart-title">Начать этап заново?</h2><p>Будут новые примеры и снова три жизни. Заработанные звёзды сохранятся.</p><div class="dialog-actions"><button class="secondary-button" type="button" data-close="restart-dialog" autofocus>Отмена</button><button id="confirm-restart" class="primary-button" type="button">Начать заново</button></div></dialog>
+  <dialog id="leave-dialog" aria-labelledby="leave-title"><h2 id="leave-title">Начать другую попытку?</h2><p>Текущая попытка будет заменена. Ранее заработанные звёзды и открытые этапы останутся.</p><div class="dialog-actions"><button class="secondary-button" type="button" data-close="leave-dialog" autofocus>Отмена</button><button id="confirm-leave" class="primary-button" type="button">Начать выбранное</button></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

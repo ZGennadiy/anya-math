@@ -1,0 +1,48 @@
+export function plural(number, forms) {
+  const n=Math.abs(number)%100, last=n%10;
+  return forms[n>10&&n<20?2:last===1?0:last>=2&&last<=4?1:2];
+}
+export const starWord=n=>plural(n,['звезда','звезды','звёзд']);
+export const lifeWord=n=>plural(n,['жизнь','жизни','жизней']);
+export const ru={
+  start:'Начать путешествие',continue:'Продолжить путь',resume:'Продолжить с того же места',
+  firstTitle:'Большие открытия<br>начинаются с тебя.',
+  firstDescription:'Аня и Снежки собирают математическое созвездие. Один пример, одна маленькая победа — и звёзды становятся ближе.',
+  returnTitle:'Ещё одна звёздочка<br>ждёт своего часа.',
+  returnDescription:'Можно открыть новый этап или вернуться за звёздами. В каждой попытке — новые примеры.',
+  allTitle:'Твоё созвездие<br>сияет целиком!',
+  allDescription:'Все этапы пройдены. Можно улучшить результат или потренировать любимую таблицу.',
+  resumeDescription:(stage,task)=>`Этап ${stage}, задача ${task}. Мы сохранили твои ответы, жизни и подсказки.`,
+  missionMeta:(level)=>`Этап ${level.id} · ${level.roundTitle} · ${level.problemCount} задач`,
+  mapProgress:(done,total)=>`Пройдено ${done} из ${total} этапов`,
+  wallet:(stars,max)=>`Собрано ${stars} ${starWord(stars)} из ${max}`,
+  lives:n=>`${n} ${lifeWord(n)} из 3`,current:'ТЫ ЗДЕСЬ',locked:'ЕЩЁ ВПЕРЕДИ',open:'МОЖНО НАЧАТЬ',
+  levelLabel:(level,locked,stars)=>`Этап ${level.id}: ${level.title}, ${level.roundTitle}. ${locked?'Сначала пройди предыдущий этап.':stars?`Лучший результат: ${stars} ${starWord(stars)}.`:'Начать.'}`,
+  trial:'ИСПЫТАНИЕ',advanced:'СИРИУС+',journey:'ПУТЕШЕСТВИЕ',practice:'СВОБОДНАЯ ТРЕНИРОВКА',speed:'ТРЕНИРОВКА НА СКОРОСТЬ',
+  questionCount:(index,total)=>`Задача ${index} из ${total}`,practiceLives:'Тренировка без потери жизней',
+  taskLabels:{numericAnswer:'РЕШИ ПРИМЕР',expression:'ШАГ ЗА ШАГОМ',missingNumber:'НАЙДИ ЗВЁЗДОЧКУ',remainder:'ЧАСТНОЕ И ОСТАТОК',trueFalse:'КТО ПРАВ?',chooseCorrect:'ВЫБЕРИ ОТВЕТ'},
+  findError:'ПРОВЕРЬ РЕШЕНИЕ СНЕЖКИ',answer:'Твой ответ',quotient:'Частное',missing:'Пропущенное число',
+  inputHelp:'Enter — проверить · Tab — дальше',remainderHelp:'Tab — к остатку · Enter — проверить',
+  correct:'✓ Верно! Ещё одна маленькая победа.',wrong:'Не страшно. Давай разберёмся вместе.',
+  companion:{idle:['Мы с тобой!','Не спеши. У тебя всё получится.'],thinking:['Интересно, что получится?','Можно подумать столько, сколько нужно.'],
+    correct:['Получилось!','Снежки радуется твоему открытию.'],almost:['Давай поищем другой путь.','Ошибки показывают, что ещё можно потренировать.'],
+    hint:['У Снежки есть идея.','Будем двигаться маленькими шагами.']},
+  hintLabel:step=>`Подсказка ${step} из 3`,hintNext:'Следующий шаг',hintDone:'Теперь попробуй сама',
+  incompleteRemainder:'Осталось ввести остаток.',storageWarning:'Не удалось сохранить прогресс в браузере. Пока страница открыта, играть можно.',
+  restartUnavailable:'Сначала открой игровой этап.',oneFactor:'Оставь хотя бы одно число для тренировки.',
+  timerRemaining:seconds=>`Осталось ${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`,
+  tableCaption:mode=>mode==='multiply'?'Строка × столбец. Выбери ячейку, чтобы увидеть четыре связанных примера.':'В ячейке делимое ÷ столбец = строка. Выбери ячейку для разбора.',
+  practiceTitle:factors=>`Дружим с ${factors.map(n=>'×'+n).join(', ')}`,
+  practiceStart:(mode,speed)=>speed?'Начать на скорость':mode==='divide'?'Тренировать деление':mode==='mixed'?'Тренировать × и ÷':'Тренировать умножение',
+  tableBack:{home:'К созвездиям',game:'К задаче',results:'К результату'},
+  result:{complete:'Созвездие становится ярче!',all:'Твоё созвездие зажжено!',failed:'Передышка со Снежки',practice:'Отлично потренировались!',timedOut:'Время закончилось — отдохнём?',
+    completeText:'Этот этап пройден. Следующая звёздочка уже открыта!',allText:'Все 36 этапов позади. Это большое математическое путешествие!',
+    failedText:'Снежки устала, но не сдаётся. Разберём похожий пример — и попробуем снова с новыми задачами.',
+    practiceText:'Каждый знакомый пример делает тебя увереннее. Звёзды сюжетных этапов не изменились.',
+    timedOutText:'Скорость приходит с практикой. Посмотри результат и возвращайся, когда захочешь.',
+    next:'Следующий этап',replay:'Ещё раз — новые примеры',retry:'Попробовать снова',practiceReplay:'Ещё одна тренировка',
+    solved:'решено задач',errors:'математических ошибок',hints:'шагов подсказки',seconds:'секунд на ответы',
+    best:n=>`Лучший результат этапа: ${n} ${starWord(n)}`,stageDone:n=>`ЭТАП ${n} ПРОЙДЕН`,recovery:'Один похожий пример',
+    review:'Возьмём с собой',readRecovery:'Посмотреть разбор'},
+  resetDone:'Прогресс сброшен. Настройки звука и движения сохранены.',
+};
