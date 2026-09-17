@@ -11,6 +11,11 @@ for(const file of await files(src)){
     const refs=file.endsWith('.html')?[...text.matchAll(/(?:src|href)="(\.[^"]+)"/g)].map(m=>m[1]):[...text.matchAll(/url\(['"]?(\.\.[^'")]+)['"]?\)/g)].map(m=>m[1]);
     for(const ref of refs)await stat(path.resolve(path.dirname(file),ref));
   }
+  if(file.endsWith('.webmanifest')){
+    // The head-link check above cannot see icons referenced from inside the manifest.
+    const manifest=JSON.parse(await readFile(file,'utf8'));
+    for(const entry of manifest.icons)await stat(path.resolve(path.dirname(file),entry.src));
+  }
 }
 await rm(out,{recursive:true,force:true});await mkdir(out,{recursive:true});await cp(src,out,{recursive:true});await writeFile(path.join(out,'.nojekyll'),'');
 console.log('Production build ready: dist/ (relative asset paths, no runtime dependencies)');

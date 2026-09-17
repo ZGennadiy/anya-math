@@ -25,6 +25,8 @@ test('HTTP server serves the game and assets at root and the Pages subpath', { t
     assert.match(await page.text(), /id="continue-game"/);
     for (const [asset, type] of [
       ['/js/app.js', 'text/javascript'], ['/css/styles.css', 'text/css'],
+      ['/sw.js', 'text/javascript'], ['/manifest.webmanifest', 'application/manifest+json'],
+      ['/assets/icons/icon-512.png', 'image/png'], ['/assets/icons/apple-touch-icon-180.png', 'image/png'],
       ...['idle', 'thinking', 'correct', 'almost', 'hint', 'levelComplete', 'noLives'].map(name => [`/assets/mascots/${name}.png`, 'image/png']),
     ]) {
       const response = await fetch(`${base}${prefix}${asset}`);

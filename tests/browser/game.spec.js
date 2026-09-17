@@ -2,6 +2,12 @@ import { test, expect } from '@playwright/test';
 import { createAttempt } from '../../public/js/generators.js';
 import { STORAGE_KEY, SETTINGS_KEY } from '../../public/js/config.js';
 const input=page=>page.locator('#answer-input');
+// macOS gives Home/End to the document (scroll), not to the caret: the line keys there are Cmd+←/→.
+// Firefox and WebKit never move the caret with them; Chromium only does on a page that cannot scroll.
+const mac=process.platform==='darwin', lineStart=mac?'Meta+ArrowLeft':'Home', lineEnd=mac?'Meta+ArrowRight':'End';
+// WebKit follows the macOS "Full Keyboard Access" setting, which is off by default, so Tab skips
+// buttons and links. Playwright cannot toggle that system setting; Linux CI covers these paths.
+const tabSkipsButtons=browserName=>mac&&browserName==='webkit';
 async function play(page){await page.goto('/anya-math/');await page.locator('#continue-game').click();await expect(input(page)).toBeFocused();}
 async function progress(page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),STORAGE_KEY);}
 async function currentTasks(page,id=1){const p=await progress(page);return createAttempt(id,p.lastAttemptSeedByLevel[id],p.activeRun?.recent??[]);}
@@ -32,8 +38,8 @@ test('native keyboard regression: 15 and 128, Backspace, Delete, arrows, selecti
   await input(page).press('ControlOrMeta+A');await page.keyboard.type('8');await expect(input(page)).toHaveValue('8');
   await input(page).press('ControlOrMeta+A');await page.keyboard.type('128');await expect(input(page)).toHaveValue('128');
   await input(page).press('Backspace');await expect(input(page)).toHaveValue('12');
-  await input(page).press('Home');await input(page).press('Delete');await expect(input(page)).toHaveValue('2');
-  await input(page).press('End');await input(page).press('Delete');await expect(input(page)).toHaveValue('2');
+  await input(page).press(lineStart);await input(page).press('Delete');await expect(input(page)).toHaveValue('2');
+  await input(page).press(lineEnd);await input(page).press('Delete');await expect(input(page)).toHaveValue('2');
   const tasks=await currentTasks(page);
   await input(page).fill(String(tasks[0].answer));await input(page).press('Enter');await page.keyboard.press('Enter');
   await expect(page.locator('#task-counter')).toHaveText('Задача 2 из 8');
@@ -45,7 +51,7 @@ test('keypad regression: native and screen input share order even after moving t
   await play(page);
   await page.getByRole('button',{name:'Цифра 1',exact:true}).click();
   await page.getByRole('button',{name:'Цифра 5',exact:true}).click();await expect(input(page)).toHaveValue('15');
-  await input(page).press('Home');await page.getByRole('button',{name:'Цифра 3',exact:true}).click();
+  await input(page).press(lineStart);await page.getByRole('button',{name:'Цифра 3',exact:true}).click();
   await expect(input(page)).toHaveValue('153');
   await page.getByRole('button',{name:'Удалить последнюю цифру'}).click();await expect(input(page)).toHaveValue('15');
   await page.getByRole('button',{name:'Очистить ответ',exact:true}).click();await expect(input(page)).toHaveValue('');
@@ -100,7 +106,7 @@ test('wrong answer double-click loses one life, failure gives a similar worked e
   expect((await progress(page)).activeRun.lives).toBe(2);
   await expect(page.locator('#expression')).toHaveText(prompt);await page.locator('#retry-answer').click();
   for(let i=0;i<2;i++){await input(page).fill('999');await input(page).press('Enter');if(i===0)await page.locator('#retry-answer').click();}
-  await expect(page.locator('#results-title')).toHaveText('Передышка со Снежки');
+  await expect(page.locator('#results-title')).toHaveText('Передышка со Снежкой');
   expect((await progress(page)).bestStarsByLevel).toEqual({});
   await expect(page.locator('.recovery-expression')).not.toHaveText(prompt);
   await page.locator('#recovery-problem summary').click();await expect(page.locator('#recovery-problem details p')).toBeVisible();
@@ -143,7 +149,7 @@ test('unfinished stage resumes after reload with the same seed, task, lives, hin
   await page.locator('#restart-run').click();await page.locator('#confirm-restart').click();
   expect((await progress(page)).activeRun.seed).not.toBe(before.activeRun.seed);await expect(input(page)).toHaveValue('');
 });
-test('remainder: native Tab and Enter, keypad targets focus, invalid remainder leaves lives intact',async({page})=>{
+test('remainder: native Tab and Enter, keypad targets focus, invalid remainder leaves lives intact',async({page,browserName})=>{
   await unlock(page,25);await page.locator('[data-level="25"]').click();
   const p=(await currentTasks(page,25))[0];
   await expect(input(page)).toBeFocused();await input(page).fill(String(p.answer.quotient));await input(page).press('Enter');
@@ -156,9 +162,11 @@ test('remainder: native Tab and Enter, keypad targets focus, invalid remainder l
   await expect(remainder).toHaveValue(String(p.answer.remainder));await remainder.press('Enter');
   await expect(page.locator('#task-counter')).toHaveText('Задача 2 из 8');await expect(input(page)).toBeFocused();
   await page.keyboard.press('Tab');await expect(remainder).toBeFocused();
+  if(tabSkipsButtons(browserName))return;
   await page.keyboard.press('Tab');await expect(page.locator('#submit-answer')).toBeFocused();
 });
-test('keyboard-only stage: visible focus, native Tab reaches hint and Escape returns to its trigger',async({page})=>{
+test('keyboard-only stage: visible focus, native Tab reaches hint and Escape returns to its trigger',async({page,browserName})=>{
+  test.skip(tabSkipsButtons(browserName),'macOS keeps buttons out of the Tab order unless Full Keyboard Access is on.');
   await page.goto('/anya-math/');
   await page.locator('#continue-game').focus();await page.keyboard.press('Enter');
   for(let i=0;i<20;i++){

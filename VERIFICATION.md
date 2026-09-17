@@ -1,4 +1,4 @@
-# Проверка версии «Аня и Снежки»
+# Проверка версии «Аня и Снежка»
 
 Дата: 14 сентября 2026. Версия пакета: 1.0.0. Основа — ZGennadiy/zakhar-teddy, коммит 698a66c8528976ee93224fd93dba801654829fe7. Это самостоятельная рабочая копия; исходный проект не изменён.
 
@@ -48,7 +48,11 @@
 
 Графика: artwork/mascots-source.jpeg, public/assets/mascots/*.png, manifest.json, scripts/prepare-mascots.py. Старые изображения маскотов удалены только из новой рабочей копии.
 
-Проверки и выпуск: tests/core.test.js, dom.test.js, mascots.test.js, server.test.js, tests/browser/*.spec.js, playwright.config.js, .github/workflows/pages.yml, scripts/serve.mjs, package.json, package-lock.json, .gitignore, README.md и этот файл.
+Установка на домашний экран: public/manifest.webmanifest, public/sw.js, public/assets/icons/*.png, artwork/icon-source.png. Инструкция живёт в диалоге «Установить приложение», на самих экранах ничего не добавлено.
+
+Менеджеры паролей: поля ответа больше не обёрнуты в `<form>`, submit-кнопка стала обычной, добавлены data-атрибуты отказа. Браузер больше не видит форму входа и не предлагает сохранённые пароли.
+
+Проверки и выпуск: tests/core.test.js, dom.test.js, mascots.test.js, pwa.test.js, server.test.js, tests/browser/*.spec.js, playwright.config.js, .github/workflows/pages.yml, scripts/serve.mjs, package.json, package-lock.json, .gitignore, README.md и этот файл.
 
 ## Ввод: причина старого дефекта
 

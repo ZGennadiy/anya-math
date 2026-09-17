@@ -1,0 +1,17 @@
+{
+  "name": "Аня и Снежка · Математическое созвездие",
+  "short_name": "Аня и Снежка",
+  "description": "36 этапов для 3 класса: умножение, деление, скобки и остаток. Новые примеры в каждой попытке.",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fcf9ff",
+  "theme_color": "#fcf9ff",
+  "icons": [
+    { "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

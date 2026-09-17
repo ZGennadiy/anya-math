@@ -136,7 +136,7 @@ test('DOM: remainder Enter moves to remainder; keypad follows focus; invalid rem
 test('DOM: failure offers a different worked example; new run has new seed, no awarded stars',async t=>{
   await boot(t);$('continue-game').click();const seed=saved().activeRun.seed,prompt=$('expression').textContent;
   for(let i=0;i<3;i++){value('answer-input','999');key('answer-input','Enter');if(i<2)$('retry-answer').click();}
-  assert.equal($('results-title').textContent,'Передышка со Снежки');assert.deepEqual(saved().bestStarsByLevel,{});
+  assert.equal($('results-title').textContent,'Передышка со Снежкой');assert.deepEqual(saved().bestStarsByLevel,{});
   assert.equal(saved().activeRun,null);assert.equal($('recovery-problem').hidden,false);
   assert.notEqual(document.querySelector('.recovery-expression').textContent,prompt);
   assert.ok($('recovery-problem').querySelector('details p').textContent.includes('='));

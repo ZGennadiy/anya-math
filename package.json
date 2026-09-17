@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Аня и Снежки: Математическое созвездие, 36 этапов для 3 класса",
+  "description": "Аня и Снежка: Математическое созвездие, 36 этапов для 3 класса",
   "scripts": {
     "test": "node --test tests/*.test.js",
     "test:e2e": "playwright test",

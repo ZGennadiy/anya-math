@@ -138,8 +138,8 @@ function reasoning(rng, mode) {
   }
   if (mode === 'findError') {
     const k = int(rng, 2, 12), ast = b('add', k, b('multiply', a, c)), wrong = (k+a)*c;
-    return { kind:'numericAnswer', prompt:`Снежки решила: ${formatAst(ast)} = ${wrong}. Исправь ответ.`, ast, answer:evaluateAst(ast), skill:mode,
-      hint:'Снежки начала со сложения. Вспомни, какое действие нужно выполнить первым.', explanation:explanationForAst(ast), metadata:{ wrong } };
+    return { kind:'numericAnswer', prompt:`Снежка решила: ${formatAst(ast)} = ${wrong}. Исправь ответ.`, ast, answer:evaluateAst(ast), skill:mode,
+      hint:'Снежка начала со сложения. Вспомни, какое действие нужно выполнить первым.', explanation:explanationForAst(ast), metadata:{ wrong } };
   }
   // Distinct operands avoid ambiguous 2 + 2 = 2 × 2. Product is bigger than either operand.
   const left = int(rng, 3, 9), right = int(rng, 3, 9), sign = rng() < .5 ? 'multiply' : 'add', ast = b(sign,left,right);

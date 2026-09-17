@@ -14,6 +14,7 @@ let progress=loadProgress(),game=null,screen='home',fields=emptyFields(),focused
 let tableMode='multiply',tableFactors=[2],tableCell=[7,8],tableReturn='home';
 let transitionTimer=null,warnedStorage=false,practicePrevious=null,practiceLast=null,recovery=null,pendingStart=null,finishedRun=null;
 let clockLast=performance.now(),clockWasActive=false;
+let installPrompt=null;
 const openDialog=()=>[...document.querySelectorAll('dialog')].some(d=>d.open);
 const savedRun=()=>restoreRun(progress.activeRun);
 const isActive=state=>state&&['answer','wrong','correct'].includes(state.phase);
@@ -202,7 +203,7 @@ $('choice-fields').addEventListener('click',event=>{
   if($('feedback').dataset.type==='invalid')$('feedback').textContent='';
   persistRun();
 });
-$('answer-form').addEventListener('submit',event=>{event.preventDefault();submit();});
+$('submit-answer').addEventListener('click',submit);
 $('retry-answer').addEventListener('click',()=>{
   if(game?.phase!=='wrong')return;
   game=advance(game);drawGame(true);persistRun();focusAnswer();markClock();
@@ -266,6 +267,14 @@ for(const [id,key] of [['setting-motion','reducedMotion'],['setting-sound','soun
     if(key==='sound')playTone('correct',progress.settings.sound);
   });
 }
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+show('install-open',!(window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone));
+$('install-open').addEventListener('click',()=>{$('settings-dialog').close();cancelTransition();markClock();$('install-dialog').showModal();});
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;show('install-now',true);});
+$('install-now').addEventListener('click',async()=>{
+  const prompt=installPrompt;installPrompt=null;show('install-now',false);
+  await prompt?.prompt();$('install-dialog').close();
+});
 $('reset-game').addEventListener('click',()=>{$('settings-dialog').close();cancelTransition();markClock();$('reset-dialog').showModal();});
 $('confirm-reset').addEventListener('click',()=>{
   cancelTransition();markClock();

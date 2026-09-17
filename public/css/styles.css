@@ -360,3 +360,8 @@ dialog>p{margin-top:17px;font-size:.95rem;color:var(--muted);line-height:1.7}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .reduce-motion *,.reduce-motion *::before,.reduce-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+#install-open{width:100%;margin-top:22px}
+.install-steps{margin-top:20px;display:grid;gap:14px}
+.install-steps p{font-size:.9rem;font-weight:750;line-height:1.5}
+.install-steps small{display:block;font-size:.85rem;color:var(--muted);font-weight:400;margin-top:5px;line-height:1.6}
+#install-now{width:100%;margin-top:20px}

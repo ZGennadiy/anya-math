@@ -1,4 +1,4 @@
-export const APP_TITLE = 'Аня и Снежки';
+export const APP_TITLE = 'Аня и Снежка';
 export const APP_SUBTITLE = 'Математическое созвездие';
 export const GENERATOR_VERSION = 'anya-constellation-3';
 export const STORAGE_KEY = 'anya-math:progress:v2';
