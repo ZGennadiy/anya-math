@@ -4,6 +4,7 @@ function browserStorage(){try{return globalThis.localStorage;}catch{return null;
 export function normalizeSettings(data) {
   const systemReduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
   return {schemaVersion:1,sound:typeof data?.sound==='boolean'?data.sound:false,
+    haptics:typeof data?.haptics==='boolean'?data.haptics:true,
     reducedMotion:typeof data?.reducedMotion==='boolean'?data.reducedMotion:typeof data?.animations==='boolean'?!data.animations:systemReduced};
 }
 export function loadSettings(storage=browserStorage()) {
