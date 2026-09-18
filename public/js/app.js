@@ -7,6 +7,7 @@ import { editAnswer } from './validation.js';
 import { ru } from './strings.js';
 import { $, show, icon, initIcons, setScreen, renderHome, renderGame, renderHint, renderTimer, renderReference, renderResults, wallet, toast } from './ui.js';
 import { playTone } from './audio.js';
+import { vibrate } from './haptics.js';
 import { registerGameTools } from './webmcp.js';
 
 const emptyFields=()=>({answer:'',remainder:'',choice:''});
@@ -29,6 +30,7 @@ function cancelTransition(){clearTimeout(transitionTimer);transitionTimer=null;}
 function applySettings(){
   document.body.classList.toggle('reduce-motion',progress.settings.reducedMotion);
   $('setting-motion').checked=progress.settings.reducedMotion;$('setting-sound').checked=progress.settings.sound;
+  $('setting-haptics').checked=progress.settings.haptics;
 }
 function changeScreen(next){
   screen=next;setScreen(next);markClock();window.scrollTo({top:0,behavior:'instant'});
@@ -131,6 +133,7 @@ function submit() {
   game=transition.state;hintVisible=false;markClock();
   if(!game.practice)progress=recordAnswer(progress,task.skillTag,transition.correct);
   persistRun();playTone(transition.correct?'correct':'wrong',progress.settings.sound);
+  vibrate(transition.correct?'correct':'wrong',progress.settings.haptics);
   if(game.phase==='failed'){finish();return;}
   drawGame();
   if(transition.correct)scheduleNext();else $('retry-answer').focus({preventScroll:true});
@@ -138,6 +141,7 @@ function submit() {
 function changeField(field,action){
   if(game?.phase!=='answer'||screen!=='game'||openDialog())return;
   fields={...fields,[field]:editAnswer(fields[field],action)};
+  vibrate('tap',progress.settings.haptics);
   const input=$(field+'-input');
   // Native input already has the complete value and caret. Never rewrite it per keystroke.
   if(input.value!==fields[field])input.value=fields[field];
@@ -199,6 +203,7 @@ $('choice-fields').addEventListener('click',event=>{
   const button=event.target.closest('[data-choice]');
   if(!button||game.phase!=='answer')return;
   fields={...fields,choice:button.dataset.choice};
+  vibrate('tap',progress.settings.haptics);
   document.querySelectorAll('[data-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   if($('feedback').dataset.type==='invalid')$('feedback').textContent='';
   persistRun();
@@ -260,13 +265,16 @@ $('results-map').addEventListener('click',()=>home(true));
 $('settings-button').addEventListener('click',()=>{applySettings();cancelTransition();markClock();$('settings-dialog').showModal();});
 document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$(button.dataset.close).close()));
 document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('close',()=>{scheduleNext();markClock();}));
-for(const [id,key] of [['setting-motion','reducedMotion'],['setting-sound','sound']]){
+for(const [id,key] of [['setting-motion','reducedMotion'],['setting-sound','sound'],['setting-haptics','haptics']]){
   $(id).addEventListener('change',event=>{
     progress={...progress,settings:{...progress.settings,[key]:event.target.checked}};
     applySettings();if(!saveSettings(progress.settings))toast(ru.storageWarning);
     if(key==='sound')playTone('correct',progress.settings.sound);
+    if(key==='haptics')vibrate('tap',progress.settings.haptics);
   });
 }
+// iOS Safari has no Vibration API, so the switch would be a dead control there.
+show('haptics-row','vibrate' in navigator);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 show('install-open',!(window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone));
 $('install-open').addEventListener('click',()=>{$('settings-dialog').close();cancelTransition();markClock();$('install-dialog').showModal();});

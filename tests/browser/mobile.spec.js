@@ -6,7 +6,7 @@ test('mobile: touch keypad and native text keep 15, check is above decorations',
   await page.goto('/anya-math/');
   await page.locator('#continue-game').tap();
   const input=page.locator('#answer-input');
-  await expect(input).toHaveAttribute('inputmode','numeric');
+  await expect(input).toHaveAttribute('inputmode','none');
   await expect(input).toHaveAttribute('dir','ltr');
   await expect(page.locator('#submit-answer')).toBeInViewport();
   const check=await page.locator('#submit-answer').boundingBox(),mascot=await page.locator('.mascot-game').boundingBox();

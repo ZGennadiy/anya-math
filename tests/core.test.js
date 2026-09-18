@@ -228,7 +228,7 @@ test('corrupt active snapshots and stale generator versions are safely discarded
 });
 test('full reset clears all campaign data but retains accessibility settings and unrelated records',()=>{
   const storage=memoryStorage();storage.setItem('other-game','keep');
-  const settings={schemaVersion:1,sound:true,reducedMotion:true};saveSettings(settings,storage);
+  const settings={schemaVersion:1,sound:true,haptics:false,reducedMotion:true};saveSettings(settings,storage);
   let p=recordAttempt(initialProgress(settings),1,42,'old tasks',createAttempt(1,42));
   p=completeLevel(p,1,3);p=recordAnswer(p,'multiply',false);saveProgress(p,storage);
   const {progress,saved}=resetProgress(storage);

@@ -6,17 +6,18 @@ import { STORAGE_KEY, SETTINGS_KEY } from '../public/js/config.js';
 import { createAttempt } from '../public/js/generators.js';
 
 const html=await readFile(new URL('../public/index.html',import.meta.url),'utf8');
-let dom,document,serial=0,registered=[],now=0;
-async function boot(t,saved,settings){
+let dom,document,serial=0,registered=[],now=0,buzz=[];
+async function boot(t,saved,settings,{vibration=true}={}){
   if(dom){dom.window.dispatchEvent(new dom.window.Event('unload'));dom.window.close();}
   t.mock.timers.reset();t.mock.timers.enable({apis:['setTimeout','setInterval']});
   now=0;t.mock.method(performance,'now',()=>now);
   dom=new JSDOM(html,{url:'https://example.test/anya-math/',pretendToBeVisual:true});
   document=dom.window.document;dom.window.scrollTo=()=>{};
+  buzz=[];if(vibration)dom.window.navigator.vibrate=ms=>{buzz.push(ms);return true;};
   registered=[];document.modelContext={registerTool:tool=>registered.push(tool)};
   dom.window.HTMLDialogElement.prototype.showModal=function(){this.open=true;this.querySelector('[autofocus]')?.focus();};
   dom.window.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new dom.window.Event('close'));};
-  for(const [key,value] of Object.entries({window:dom.window,document,localStorage:dom.window.localStorage}))
+  for(const [key,value] of Object.entries({window:dom.window,document,navigator:dom.window.navigator,localStorage:dom.window.localStorage}))
     Object.defineProperty(globalThis,key,{value,writable:true,configurable:true});
   if(saved!==undefined)localStorage.setItem(STORAGE_KEY,typeof saved==='string'?saved:JSON.stringify(saved));
   if(settings)localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
@@ -225,7 +226,7 @@ test('DOM: speed practice pauses for help and settings, expires gently and leave
   assert.deepEqual(saved().bestStarsByLevel,{});assert.equal(saved().unlockedLevel,1);assert.equal(saved().practiceStats.runs,1);
 });
 test('DOM: reset confirmation clears all saved progress, retains sound/reduced motion and does not touch another game',async t=>{
-  const settings={schemaVersion:1,sound:true,reducedMotion:true};
+  const settings={schemaVersion:1,sound:true,haptics:false,reducedMotion:true};
   await boot(t,unlocked(5),settings);localStorage.setItem('zakhar-teddy-game:v2','original');
   $('continue-game').click();type('answer-input','15');
   $('settings-button').click();$('reset-game').click();
@@ -269,4 +270,22 @@ test('DOM: the complete 36-stage campaign works through real handlers, including
   assert.equal($('star-total').textContent,'108');
   assert.equal(saved().activeRun,null);
   assert.equal($('next-level').hidden,true);
+});
+test('DOM: vibration ticks the input, lasts longer for a wrong answer and stops when switched off',async t=>{
+  await boot(t);assert.equal($('haptics-row').hidden,false);
+  $('continue-game').click();const list=tasks(1);
+  buzz.length=0;clickKey('1');clickKey('backspace');assert.deepEqual(buzz,[10,10]);
+  buzz.length=0;answer({...list[0],answer:list[0].answer+1});assert.equal(buzz.at(-1),160);
+  $('retry-answer').click();buzz.length=0;answer(list[0]);assert.equal(buzz.at(-1),35);
+  tick(t,900);assert.equal($('task-counter').textContent,'Задача 2 из 8');
+  $('settings-button').click();$('setting-haptics').checked=false;
+  $('setting-haptics').dispatchEvent(new dom.window.Event('change',{bubbles:true}));
+  document.querySelector('[data-close="settings-dialog"]').click();
+  buzz.length=0;clickKey('1');answer(list[1]);assert.deepEqual(buzz,[]);
+  assert.equal(JSON.parse(localStorage.getItem(SETTINGS_KEY)).haptics,false);
+});
+test('DOM: without the Vibration API the switch is hidden instead of doing nothing',async t=>{
+  await boot(t,undefined,undefined,{vibration:false});
+  assert.equal($('haptics-row').hidden,true);
+  $('continue-game').click();clickKey('1');assert.equal($('answer-input').value,'1');
 });
