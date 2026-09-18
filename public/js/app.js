@@ -175,8 +175,13 @@ function askRestart(){
 initIcons();
 $('keypad').innerHTML=['1','2','3','4','5','6','7','8','9','clear','0','backspace'].map(key=>
   '<button type="button" data-key="'+key+'" aria-label="'+(key==='clear'?'Очистить ответ':key==='backspace'?'Удалить последнюю цифру':'Цифра '+key)+'" class="'+(/^[0-9]$/.test(key)?'digit':'utility-key')+'">'+(key==='clear'?'C':key==='backspace'?icon('backspace'):key)+'</button>').join('');
+// iOS Safari opens its keyboard despite inputmode="none". Read-only fields never open one
+// anywhere, and focus, caret, the keypad and Enter keep working. Only touch-first devices:
+// a read-only field cannot be typed into, and desktops have no on-screen keyboard to hide.
+const touchOnly=window.matchMedia?.('(pointer: coarse)').matches??false;
 for(const field of ['answer','remainder']){
   const input=$(field+'-input');
+  input.readOnly=touchOnly;
   input.addEventListener('focus',()=>{focusedField=field;});
   input.addEventListener('input',()=>changeField(field,{type:'native',value:input.value}));
   input.addEventListener('keydown',event=>{
