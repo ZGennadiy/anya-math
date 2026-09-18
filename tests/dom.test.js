@@ -7,13 +7,14 @@ import { createAttempt } from '../public/js/generators.js';
 
 const html=await readFile(new URL('../public/index.html',import.meta.url),'utf8');
 let dom,document,serial=0,registered=[],now=0,buzz=[];
-async function boot(t,saved,settings,{vibration=true}={}){
+async function boot(t,saved,settings,{vibration=true,coarse=false}={}){
   if(dom){dom.window.dispatchEvent(new dom.window.Event('unload'));dom.window.close();}
   t.mock.timers.reset();t.mock.timers.enable({apis:['setTimeout','setInterval']});
   now=0;t.mock.method(performance,'now',()=>now);
   dom=new JSDOM(html,{url:'https://example.test/anya-math/',pretendToBeVisual:true});
   document=dom.window.document;dom.window.scrollTo=()=>{};
   buzz=[];if(vibration)dom.window.navigator.vibrate=ms=>{buzz.push(ms);return true;};
+  if(coarse)dom.window.matchMedia=query=>({matches:query.includes('pointer: coarse'),addEventListener(){}});
   registered=[];document.modelContext={registerTool:tool=>registered.push(tool)};
   dom.window.HTMLDialogElement.prototype.showModal=function(){this.open=true;this.querySelector('[autofocus]')?.focus();};
   dom.window.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new dom.window.Event('close'));};
@@ -61,6 +62,7 @@ test('DOM: no code screen, 36 stages, author link; only first stage unlocked',as
 test('DOM regression: native values, cursor, selections and keypad share one stable LTR input',async t=>{
   await boot(t);$('continue-game').click();
   const input=$('answer-input');assert.equal(document.activeElement,input);assert.equal(input.dir,'ltr');
+  assert.equal(input.readOnly,false); // A desktop keeps native typing: there is no on-screen keyboard to hide.
   type('answer-input','1');type('answer-input','5');assert.equal(input.value,'15');
   input.setSelectionRange(1,1);type('answer-input','2');assert.equal(input.value,'125');
   assert.equal(input.selectionStart,2);assert.equal($('answer-input'),input);
@@ -288,4 +290,13 @@ test('DOM: without the Vibration API the switch is hidden instead of doing nothi
   await boot(t,undefined,undefined,{vibration:false});
   assert.equal($('haptics-row').hidden,true);
   $('continue-game').click();clickKey('1');assert.equal($('answer-input').value,'1');
+});
+test('DOM: a touch-first device answers with read-only fields, so no virtual keyboard can open',async t=>{
+  await boot(t,undefined,undefined,{coarse:true});
+  for(const id of ['answer-input','remainder-input'])assert.equal($(id).readOnly,true);
+  $('continue-game').click();
+  const input=$('answer-input');assert.equal(document.activeElement,input);
+  clickKey('1');clickKey('5');assert.equal(input.value,'15');
+  clickKey('backspace');assert.equal(input.value,'1');
+  assert.equal(key('answer-input','Enter').defaultPrevented,true);
 });
